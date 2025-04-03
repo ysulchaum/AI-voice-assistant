@@ -1,12 +1,23 @@
+/* Add this to reset default body margins/padding */
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh; /* Ensure body takes full viewport height */
+
+}
+
 .app-container {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  display: flex;
   flex-direction: column;
-  justify-content: center; /* Align vertically in the center */
-  align-items: center; /* Align horizontally in the center */
+  justify-content: space-between; /* Distribute space between header, main, footer */
+  align-items: stretch; /* Stretch children to full width */
   background-color: #f5f5f5;
   font-family: Arial, sans-serif;
+  min-height: 100vh; /* Full viewport height */
+  width: 100vw; /* Full viewport width */
+  max-width: 100vw; /* Prevent overflow */
+  overflow-y: auto; /* Scroll if content exceeds height */
+  box-sizing: border-box;
 }
 
 .header {
@@ -14,26 +25,29 @@
   color: white;
   padding: 1rem;
   text-align: center;
+  width: 100%; /* Full width */
 }
 
 .main-content {
-  flex: 1;
+  flex: 1; /* Take up remaining space */
   padding: 2rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center; /* Center children horizontally */
   gap: 2rem;
+  width: 100%; /* Full width */
+  box-sizing: border-box; /* Include padding in width */
 }
 
 .conversation-container {
   width: 100%;
-  max-width: 600px;
+  max-width: 600px; /* Limit width for readability, but still full-width capable */
   background-color: white;
   overflow-y: auto;
   border-radius: 8px;
   padding: 1rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  min-height: 200px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 250px;
 }
 
 .message {
@@ -50,7 +64,7 @@
   background-color: #f1f1f1;
 }
 
-.function-bar{
+.function-bar {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -67,14 +81,12 @@
   transition: all 0.3s ease;
 }
 
-
 .controls {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
 }
-
 
 .mic-button {
   background-color: #3498db;
@@ -114,6 +126,7 @@
   color: white;
   text-align: center;
   padding: 0.5rem;
+  width: 100%; /* Full width */
 }
 
 .audio-player {

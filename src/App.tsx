@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { FaMicrophone, FaMicrophoneSlash } from "react-icons/fa";
 
 interface Message {
@@ -16,6 +16,16 @@ function App() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
+  // Add useEffect to call getHistory when the app starts
+  useEffect(() => {
+    const abortController = new AbortController(); // Create AbortController
+    getHistory(abortController.signal); // Pass signal to fetch
+
+    return () => {
+      abortController.abort(); // Abort fetch on unmount
+    };// reason: prevent called twice
+  }, []);
+
   const handleClear = async () => {
     const userConfirmed = window.confirm("Are you sure you want to clear?");
     if (userConfirmed) {
@@ -26,7 +36,6 @@ function App() {
         });
         // Clear the UI conversation
         setConversation([]);
-        
       } catch (error) {
         console.error("Error clearing content:", error);
         setStatus("Error: Content not cleared");
@@ -35,6 +44,62 @@ function App() {
       console.log("Content cleared!");
     } else {
       console.log("Clear action canceled.");
+    }
+  };
+
+  const getHistory = async (signal?: AbortSignal) => {
+    try {
+      const response = await fetch("http://localhost:5000/get-history", {
+        method: "GET",
+        signal, // Attach signal to request
+      });
+
+      // Handle aborted request
+      if (signal?.aborted) {
+        console.log("Fetch aborted");
+        return;
+      }// reason: prevent called twice
+
+      const data = await response.json();
+
+      const aiTranscripts = data.transcript; // AI text list
+      const userResponses = data.response; // User text list
+      const userAudioFiles = data.filenameUser; // User audio filenames
+      const aiAudioFiles = data.filenameAI; // AI audio filenames
+      const count = aiTranscripts.length; // Number of messages
+
+      for (let i = 0; i < count; i++) {
+        // Fetch both audios
+        const [userAudio, aiAudio] = await Promise.all([
+          fetch(`http://localhost:5000/get-user-audio/${userAudioFiles[i]}`),
+          fetch(`http://localhost:5000/get-ai-audio/${aiAudioFiles[i]}`),
+        ]);
+
+        // Create URLs
+        const userAudioUrl = URL.createObjectURL(await userAudio.blob());
+        const aiAudioUrl = URL.createObjectURL(await aiAudio.blob());
+
+        // Add both messages to conversation
+        setConversation((prev) => [
+          ...prev,
+          {
+            speaker: "user",
+            text: userResponses[i],
+            audioUrl: userAudioUrl,
+          },
+          {
+            speaker: "assistant",
+            text: aiTranscripts[i],
+            audioUrl: aiAudioUrl,
+          },
+        ]);
+      }
+    } catch (error: any) {
+      if (error.name === "AbortError") {
+        console.log("Request aborted");
+      } else {
+        console.error("Error fetching history:", error);
+      }
     }
   };
 
