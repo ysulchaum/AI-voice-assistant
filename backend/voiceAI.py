@@ -113,7 +113,7 @@ def query_llm_image_prompt(input_text, model="deepseek-chat", max_tokens=100):
 def init_memory(USER_ID="Tom", AGENT_ID="May"):
     system_messages = [
         {"role": "system",
-         "content": f"You are {AGENT_ID}, {USER_ID}'s girlfriend, and you love him very much. Use simple, natural, and affectionate language, like in a daily romantic conversation. Avoid action descriptions."},
+         "content": f"You are a friendly assistant. Avoid action descriptions."},
         {"role": "system", "content": "Use simple natural spoken words only—no action descriptions."},
         {"role": "system", "content": "Keep your response simple, short, and like a daily chatting conversation."},
     ]
@@ -158,7 +158,7 @@ def query_llm(input_text, USER_ID="Tom", AGENT_ID="May", model="deepseek-chat", 
 
         assistant = ConversableAgent(
             name=AGENT_ID,
-            system_message=f"You are {AGENT_ID}, {USER_ID}'s girlfriend, and you love him very much. Use simple, natural, and affectionate language, like in a daily romantic conversation. Avoid action descriptions and system explanations. Context: {context}",
+            system_message=f"You are You are a friendly assistant. Context: {context}",
             llm_config=llm_config,
             human_input_mode="NEVER"
         )
