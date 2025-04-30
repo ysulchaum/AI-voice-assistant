@@ -22,9 +22,9 @@ from concurrent.futures import ThreadPoolExecutor
 from functools import lru_cache
 
 # API Keys
-ELEVENLABS_API_KEY = "sk_c6bb12ac9fe4197a07ae0d9d69fa3d3662a8b40fd85d10fee"
-DEEPSEEK_API_KEY = "sk-42f8c04394a94ed38e893098d05a3a46"
-huggingface_api_key = "hf_igqqZtXtqhTHGhjlpRNIzGwoeGukvDksIxx"
+ELEVENLABS_API_KEY = ""
+DEEPSEEK_API_KEY = ""
+huggingface_api_key = ""
 
 # Initialize clients
 client_elevenlabs = ElevenLabs(api_key=ELEVENLABS_API_KEY)
